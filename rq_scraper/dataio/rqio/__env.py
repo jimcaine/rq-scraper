@@ -1,0 +1,4 @@
+import os
+
+REDIS_SERVER_HOST = os.environ['RQS_REDIS_SERVER_HOST']
+REDIS_SERVER_PORT = os.environ['RQS_REDIS_SERVER_PORT']

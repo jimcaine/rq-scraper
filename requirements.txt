@@ -1,0 +1,13 @@
+# lite
+requests==2.22.0
+html5lib==1.0.1
+bs4==0.0.1
+fake-headers==1.0.2
+
+# full
+flask==1.1.1
+flask-restplus==0.13.0
+pymongo==3.10.1
+rq==1.2.0
+rq-scheduler==0.9.1
+pandas==1.2.2

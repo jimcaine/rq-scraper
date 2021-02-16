@@ -1,0 +1,39 @@
+version: '3'
+services:
+  rq-scraper-mongo:
+    container_name: 'rq-scraper-mongo'
+    image: mongo:latest
+    ports:
+      - ${RQS_MONGO_PORT}:27017
+    volumes:
+      - ${RQS_MONGO_PATH}:/data/db
+
+  rq-scraper-queue:
+    container_name: 'rq-scraper-queue'
+    image: redis:latest
+    command: bash -c "redis-server"
+    ports:
+      - ${RQS_REDIS_SERVER_PORT}:6379
+
+  rq-scraper-worker:
+    container_name: 'rq-scraper-worker'
+    build: .
+    image: rq-scraper:0.0.1
+    command: bash -c "rqworker default --url redis://rq-scraper-queue:6379"
+    environment:
+      - RQS_MONGO_HOST=rq-scraper-mongo
+      - RQS_MONGO_PORT=${RQS_MONGO_PORT}
+      - RQS_REDIS_SERVER_HOST=rq-scraper-queue
+      - RQS_REDIS_SERVER_PORT=6379
+    depends_on:
+      - rq-scraper-queue
+
+  rq-scraper-dashboard:
+    container_name: 'rq-scraper-dash'
+    image: eoranged/rq-dashboard:latest
+    ports:
+      - 9181:9181
+    environment:
+      - RQ_DASHBOARD_REDIS_URL=redis://rq-scraper-queue:6379
+    depends_on:
+      - rq-scraper-queue
